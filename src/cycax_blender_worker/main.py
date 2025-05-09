@@ -311,12 +311,17 @@ if __name__ == "__main__":
     logging.info("Connect to CYCAX server at %s", server_address)
 
     server = CycaxClient(server_address)
-    jobs = server.list_jobs(state_not_in="completed")
-    for job in jobs:
-        blender_state = dict_get(job, "attributes", "state", "tasks", "blender")
-        if blender_state not in (None, "COMPLETED"):
-            spec = server.get_job_spec(job["id"])
-            assembly = AssemblyBlender(spec, base_worker_path, server)
-            assembly.build(job_id=job["id"])
-        else:
-            logging.info("Job %s is not an assembly.", job["id"])
+    while True:
+        jobs = server.list_jobs(state_not_in="completed")
+        if not jobs:
+            time.sleep(10)
+            logging.info("No Jobs Sleep for 10 seconds.")
+            continue
+        for job in jobs:
+            blender_state = dict_get(job, "attributes", "state", "tasks", "blender")
+            if blender_state not in (None, "COMPLETED"):
+                spec = server.get_job_spec(job["id"])
+                assembly = AssemblyBlender(spec, base_worker_path, server)
+                assembly.build(job_id=job["id"])
+            else:
+                logging.info("Job %s is not an assembly.", job["id"])
