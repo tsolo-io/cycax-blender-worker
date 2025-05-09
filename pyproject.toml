@@ -1,0 +1,123 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cycax-blender-worker"
+dynamic = ["version"]
+description = 'A CyCAx Server worker process that uses blender to build assemblies.'
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+license = "Apache-2.0"
+keywords = ["CyCAx"]
+authors = [{ name = "Martin Slabber", email = "martin@tsolo.io" }]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = ["httpx", "bpy==4.4.0", "python-dotenv", "matplotlib"]
+
+[project.urls]
+Documentation = "https://github.com/tsolo-dev/cycax-blender-worker#readme"
+Issues = "https://github.com/tsolo-dev/cycax-blender-worker/issues"
+Source = "https://github.com/tsolo-dev/cycax-blender-worker"
+
+[tool.hatch.version]
+path = "src/cycax_blender_worker/__about__.py"
+
+[tool.coverage.run]
+source_pkgs = ["cycax_blender_worker", "tests"]
+branch = true
+parallel = true
+omit = ["src/cycax_blender_worker/__about__.py"]
+
+[tool.coverage.paths]
+cycax_blender_worker = [
+    "src/cycax_blender_worker",
+    "*/cycax-blender-worker/src/cycax_blender_worker",
+]
+tests = ["tests", "*/cycax-blender-worker/tests"]
+
+[tool.coverage.report]
+exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
+
+[tool.hatch.envs.lint]
+detached = true
+dependencies = ["mypy>=1.0.0", "ruff>=0.0.243", "typos"]
+[tool.hatch.envs.lint.scripts]
+typing = "mypy --install-types --non-interactive {args:src/cycax tests}"
+style = ["ruff check --fix {args:.}"]
+spell = "typos {args:.}"
+fmt = ["ruff format {args:.}", "style"]
+all = ["style", "typing"]
+
+[tool.typos.default.extend-words]
+Pn = "Pn"
+
+[tool.black]
+target-version = ["py310"]
+line-length = 120
+skip-string-normalization = true
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+lint.select = [
+    "A",
+    "ARG",
+    "B",
+    "C",
+    "DTZ",
+    "E",
+    "EM",
+    "F",
+    "FBT",
+    "I",
+    "ICN",
+    "ISC",
+    "N",
+    "PLC",
+    "PLE",
+    "PLR",
+    "PLW",
+    "Q",
+    "RUF",
+    "S",
+    "T",
+    "TID",
+    "UP",
+    "W",
+    "YTT",
+]
+lint.ignore = [
+    # Allow non-abstract empty methods in abstract base classes
+    "B027",
+    # Allow boolean positional values in function calls, like `dict.get(... True)`
+    "FBT003",
+    # Ignore checks for possible passwords
+    "S105",
+    "S106",
+    "S107",
+    # Ignore complexity
+    "C901",
+    "PLR0911",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+]
+lint.unfixable = [
+    # Don't touch unused imports
+    "F401",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["cycax"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports
+"tests/**/*" = ["PLR2004", "S101", "TID252"]

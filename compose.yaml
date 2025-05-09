@@ -1,0 +1,10 @@
+---
+
+services:
+  cycax_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DEVELOPMENT=true
+      - DEBUG=false

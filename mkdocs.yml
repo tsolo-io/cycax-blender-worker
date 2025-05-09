@@ -1,0 +1,28 @@
+---
+
+site_name: CyCAx FreeCAD worker
+theme:
+    name: "material"
+plugins:
+    - mkdocstrings:
+          default_handler: python
+          handlers:
+              python:
+                  paths:
+                      - src
+                  options:
+                      show_submodules: true
+docs_dir: docs/content
+site_dir: docs/site
+use_directory_urls: false
+
+markdown_extensions:
+    - admonition
+    - pymdownx.details
+    - pymdownx.highlight:
+          anchor_linenums: true
+          line_spans: __span
+          pygments_lang_class: true
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
+    - pymdownx.superfences:
