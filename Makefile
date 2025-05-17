@@ -10,15 +10,11 @@ help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 build: ## Build containers
-	mkdir -p dist
-	echo "#!/bin/bash" > dist/cycax-freecad-worker.sh
-	echo "VERSION=$(shell hatch version)" >> dist/cycax-freecad-worker.sh
-	cat src/cycax_freecad_worker/base.sh >> dist/cycax-freecad-worker.sh
-	cat src/cycax_freecad_worker/cycax_client_freecad.py | xz | base64 >> dist/cycax-freecad-worker.sh
-	chmod a+x dist/cycax-freecad-worker.sh
+	hatch dep show requirements > requirements.txt
+	docker compose build
 
 run: ## Run the CyCAx Server directly
-	hatch run uvicorn cycax_server.main:app --reload --host 0.0.0.0 --port 8765
+	hatch run python3.11 ./src/cycax_blender_worker/main.py
 
 test: ## Run the basic unit tests, skip the ones that require a connection to ceph cluster.
 	hatch run testing:test
@@ -37,7 +33,7 @@ docs:
 	hatch run docs:build
 
 docs-open: ## Open the documentation in your default browser (Linux only)
-	xdg-open docs/site/index.html
+	open docs/site/index.html
 
 docs-serve: ## Run the documentation server locally
 	hatch run docs:serve

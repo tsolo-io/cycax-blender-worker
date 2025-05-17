@@ -17,7 +17,13 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: Implementation :: CPython",
 ]
-dependencies = ["httpx", "bpy==4.4.0", "python-dotenv", "matplotlib"]
+dependencies = [
+    "httpx==0.28.1",
+    "bpy==4.4.0",
+    "python-dotenv==1.1.0",
+    "matplotlib==3.10.3",
+    "pydantic-settings==2.9.1",
+]
 
 [project.urls]
 Documentation = "https://github.com/tsolo-dev/cycax-blender-worker#readme"
@@ -45,7 +51,7 @@ exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
 
 [tool.hatch.envs.lint]
 detached = true
-dependencies = ["mypy>=1.0.0", "ruff>=0.0.243", "typos"]
+dependencies = ["mypy==1.15.0", "ruff==0.11.10", "typos==1.32.0"]
 [tool.hatch.envs.lint.scripts]
 typing = "mypy --install-types --non-interactive {args:src/cycax tests}"
 style = ["ruff check --fix {args:.}"]
@@ -57,12 +63,12 @@ all = ["style", "typing"]
 Pn = "Pn"
 
 [tool.black]
-target-version = ["py310"]
+target-version = ["py311"]
 line-length = 120
 skip-string-normalization = true
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 line-length = 120
 lint.select = [
     "A",

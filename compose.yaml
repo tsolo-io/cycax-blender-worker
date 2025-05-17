@@ -1,10 +1,13 @@
 ---
 
 services:
-  cycax_server:
+  cycax_blender_worker:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file: .env
     environment:
       - DEVELOPMENT=true
       - DEBUG=false
+    volumes:
+      - .:/app
