@@ -16,9 +16,9 @@ jobs:
         run: pip install hatch
       - name: Check out repository code
         uses: https://gitea.com/actions/checkout@v4
-      - name: Build the utilities
+      - name: Build and package into a Python Wheel
         run: |
-          hatch dep show requirements > requirements.txt
+          hatch build
       - name: Make containers and publish
         uses: https://gitea.tu.tsolo.net/Tsolo/container-build-publish-action@main
         with:
