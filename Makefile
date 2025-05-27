@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Tsolo.io
+#
+# SPDX-License-Identifier: Apache-2.0
+
 .ONESHELL: # Run all the commands in the same shell
 .PHONY: docs
 .DEFAULT_GOAL := help
