@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2025 Tsolo.io
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+
+services:
+  cycax_blender_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file: .env
+    environment:
+      - DEVELOPMENT=true
+      - DEBUG=false
+    volumes:
+      - .:/app

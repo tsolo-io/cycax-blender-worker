@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: 2025 Tsolo.io
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: Build
+run-name: CyCAx Blender Worker
+on: [push]
+
+jobs:
+  publish:
+    runs-on: "ubuntu-22.04"
+    container:
+      image: gitea.tu.tsolo.net/tsolo/ubuntu:22-dev
+    steps:
+      - name: Setup Python
+        uses: https://gitea.com/actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Hatch
+        run: pip install hatch
+      - name: Check out repository code
+        uses: https://gitea.com/actions/checkout@v4
+      - name: Build and package into a Python Wheel
+        run: |
+          hatch build
+      - name: Make containers and publish
+        uses: https://gitea.tu.tsolo.net/Tsolo/container-build-publish-action@main
+        with:
+          registrypassword: ${{ secrets.REGISTRYPASSWORD }}
