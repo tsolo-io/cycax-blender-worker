@@ -22,6 +22,7 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
 ]
 dependencies = [
+    "numpy<2.0",
     "httpx==0.28.1",
     "bpy==4.4.0",
     "python-dotenv==1.1.0",
@@ -33,6 +34,9 @@ dependencies = [
 Documentation = "https://github.com/tsolo-dev/cycax-blender-worker#readme"
 Issues = "https://github.com/tsolo-dev/cycax-blender-worker/issues"
 Source = "https://github.com/tsolo-dev/cycax-blender-worker"
+
+[project.scripts]
+cycax-blender-worker = "cycax_blender_worker:main.main"
 
 [tool.hatch.version]
 path = "src/cycax_blender_worker/__about__.py"

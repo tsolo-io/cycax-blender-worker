@@ -23,7 +23,7 @@ def dict_get(data: dict, *args) -> Any:
     return dd.get(args[-1])
 
 
-if __name__ == "__main__":
+def main():
     load_dotenv()
     config = Config()
     base_worker_path = config.temp_dir
@@ -50,3 +50,7 @@ if __name__ == "__main__":
                 assembly.build(job_id=job["id"])
             else:
                 logging.info("Job %s is not an assembly.", job["id"])
+
+
+if __name__ == "__main__":
+    main()

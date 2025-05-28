@@ -15,7 +15,9 @@ help:
 
 build: ## Build containers
 	hatch dep show requirements > requirements.txt
-	docker compose build
+	hatch build
+	docker build -t "tsolo/cycax-blender-worker:${shell hatch version}" .
+	# docker compose build
 
 run: ## Run the CyCAx Server directly
 	hatch run python3.11 ./src/cycax_blender_worker/main.py
