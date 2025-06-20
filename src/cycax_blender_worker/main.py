@@ -7,6 +7,7 @@ import sys
 import time
 from typing import Any
 
+import httpx
 from dotenv import load_dotenv
 
 from cycax_blender_worker.assembler import AssemblyBlender
@@ -36,11 +37,24 @@ def main():
     logging.info("Connect to CYCAX server at %s", server_address)
 
     server = CycaxClient(config.server)
+    connection = None
+    while connection is None:
+        try:
+            connection = server.connect()
+        except httpx.ConnectError:
+            logging.warning("Could not connect to CYCAX server as %s", config.server)
+            time.sleep(20)
+
     while True:
-        jobs = server.list_jobs(state_not_in="completed")
+        try:
+            jobs = server.list_jobs(state_not_in="completed")
+        except httpx.ConnectError:
+            logging.warning("Could not connect to CYCAX server as %s", config.server)
+            time.sleep(20)
+            continue
         if not jobs:
-            time.sleep(10)
             logging.info("No Jobs Sleep for 10 seconds.")
+            time.sleep(10)
             continue
         for job in jobs:
             blender_state = dict_get(job, "attributes", "state", "tasks", "blender")

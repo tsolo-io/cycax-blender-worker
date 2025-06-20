@@ -9,6 +9,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    command: /app/src/start.sh
     env_file: .env
     environment:
       - DEVELOPMENT=true
