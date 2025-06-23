@@ -7,6 +7,7 @@ import sys
 import time
 from typing import Any
 
+import httpx
 from dotenv import load_dotenv
 
 from cycax_blender_worker.assembler import AssemblyBlender
@@ -36,20 +37,39 @@ def main():
     logging.info("Connect to CYCAX server at %s", server_address)
 
     server = CycaxClient(config.server)
-    while True:
-        jobs = server.list_jobs(state_not_in="completed")
-        if not jobs:
-            time.sleep(10)
-            logging.info("No Jobs Sleep for 10 seconds.")
+    connection = None
+    while connection is None:
+        try:
+            connection = server.connect()
+        except httpx.ConnectError:
+            logging.warning("Could not connect to CYCAX server as %s", config.server)
+            time.sleep(20)
+
+    running = True
+    while running:
+        try:
+            jobs = server.list_jobs(state_not_in="completed")
+        except httpx.ConnectError:
+            logging.warning("Could not connect to CYCAX server as %s", config.server)
+            time.sleep(20)
             continue
+        counter = 0
         for job in jobs:
             blender_state = dict_get(job, "attributes", "state", "tasks", "blender")
             if blender_state not in (None, "COMPLETED"):
                 spec = server.get_job_spec(job["id"])
-                assembly = AssemblyBlender(spec, base_worker_path, server)
+                work_dir = base_worker_path / job["id"]
+                work_dir.mkdir(parents=True, exist_ok=True)
+                assembly = AssemblyBlender(spec, work_dir, server)
                 assembly.build(job_id=job["id"])
+                counter += 1
+                running = False
+                break  # Leave the application.
             else:
                 logging.info("Job %s is not an assembly.", job["id"])
+        if counter == 0:
+            logging.info("No Jobs Sleep for 10 seconds.")
+            time.sleep(10)
 
 
 if __name__ == "__main__":
