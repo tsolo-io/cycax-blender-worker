@@ -143,4 +143,6 @@ class AssemblyBlender:
         part_path.mkdir(exist_ok=True)
         save_file = str(self._base_path / job_id / f"{self.name}.blend")
         bpy.ops.wm.save_as_mainfile(filepath=save_file)
-        self._client.upload_artifacts("blender", job_id, self.name, self._base_path, job_path=True)
+        self._client.upload_artifacts(
+            "blender", job_id, self.name, self._base_path, job_path=True, extensions_only="blender"
+        )
